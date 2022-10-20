@@ -1,0 +1,20 @@
+Flappy Byrds 
+
+IDEIAS
+
+
+PRIMEIRO PROJETO
+criar do zero usando css sem imagens do flappy byrds,
+criar de forma bem basica o mais simples possivel 
+criar score
+criar placar
+tentar criar (quantos mais pontos maior a velocidade)
+
+
+
+SEGUNDO PROJETO
+usando imagens prontas
+colocar todos sistemas de score, placar e record
+criar fases mais dificeis 
+outros estilos 
+criar um layout com nome 
