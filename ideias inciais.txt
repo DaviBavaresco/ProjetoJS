@@ -18,3 +18,7 @@ colocar todos sistemas de score, placar e record
 criar fases mais dificeis 
 outros estilos 
 criar um layout com nome 
+
+
+COLAS
+https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
