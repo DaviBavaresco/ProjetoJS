@@ -29,38 +29,66 @@ const FlappyByrd = {
 
 // preparação do chão
 const chao = {
-spriteX: 0,
-spriteY: 607,
-largura:224,
-altura:112,
-x: 0,
-y: canvas.height-112, // empurro ele todo para baixo, subo só a altura dele deixando ele perfeito no canva
+    spriteX: 0,
+    spriteY: 607,
+    largura: 224,
+    altura: 112,
+    x: 0,
+    y: canvas.height - 112, // empurro ele todo para baixo, subo só a altura dele deixando ele perfeito no canva
 
-desenha(){
-    contexto.drawImage( //primeiro chao
-      sprites,
-      chao.spriteX,chao.spriteY,
-      chao.largura,chao.altura,
-      chao.x,chao.y,
-      chao.largura,chao.altura, 
-    );
-    contexto.drawImage( //segundo chao duplicado
-      sprites,
-      chao.spriteX,chao.spriteY,
-      chao.largura,chao.altura,
-      (chao.x+chao.largura),chao.y, //esse metodo usado para empurar a imagem pego ele grudado na parede e empuro ele usando a largura para cobrir a tela
-      chao.largura,chao.altura, 
-    );
+    desenha() {
+        contexto.drawImage( //primeiro chao
+            sprites,
+            chao.spriteX, chao.spriteY,
+            chao.largura, chao.altura,
+            chao.x, chao.y,
+            chao.largura, chao.altura,
+        );
+        contexto.drawImage( //segundo chao duplicado
+            sprites,
+            chao.spriteX, chao.spriteY,
+            chao.largura, chao.altura,
+            (chao.x + chao.largura), chao.y, //esse metodo usado para empurar a imagem pego ele grudado na parede e empuro ele usando a largura para cobrir a tela
+            chao.largura, chao.altura,
+        );
+    }
+
 }
 
+const fundo = {
+    spriteX: 390,
+    spriteY: 0,
+    largura: 275,
+    altura: 204,
+    x: 0,
+    y: canvas.height - 204, //jogo toda pra baixo, e subu só sua altura para cobrir a tela
 
+    desenha() {
+        contexto.fillStyle = '#70c5ce'; //escolho a cor de fundo
+        contexto.fillRect(0,0, canvas.width,canvas.height) // mostro quais cordenadas ela vai cobrir, começando no topo no caso 0,0 e vai ir ate o final do canva.
+        contexto.drawImage(
+            sprites,
+            fundo.spriteX, fundo.spriteY,
+            fundo.largura, fundo.altura,
+            fundo.x, fundo.y,
+            fundo.largura, fundo.altura,
+        )
+        contexto.drawImage(
+            sprites,
+            fundo.spriteX, fundo.spriteY,
+            fundo.largura, fundo.altura,
+            (fundo.x+fundo.largura), fundo.y,
+            fundo.largura, fundo.altura,
+        );
+    }
 }
 
 //função feita para montar o FPS (frames por segundo, imagen lisa)
 function loop() {
-    FlappyByrd.desenha();
+    fundo.desenha();  
     chao.desenha();
-
+    FlappyByrd.desenha();
+      
     requestAnimationFrame(loop);
 }
 loop(); //chamo a função
