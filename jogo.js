@@ -108,15 +108,47 @@ const inicio = {
     }
 }
 
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+    telaAtiva = novaTela;
+};
+
+const telas = {
+    INICIO: { //monto a tela de inicio com o personagem parado, e es
+        desenha() {
+            fundo.desenha();
+            chao.desenha();
+            FlappyByrd.desenha();
+            inicio.desenha();
+
+        },
+        desce() {
+
+        }
+    }
+
+};
+telas.jogo = { //monto a tela de jogo com o personagem se mechendo
+    desenha() {
+        fundo.desenha();
+        chao.desenha();
+        FlappyByrd.desenha();
+    },
+    desce() {
+        FlappyByrd.desce();
+    }
+}
 //função feita para montar o FPS (frames por segundo, imagen lisa)
 function loop() {
-    FlappyByrd.desce();
-    fundo.desenha();
-    chao.desenha();
-    FlappyByrd.desenha();
-    inicio.desenha();
+
+    telaAtiva.desenha();
+    telaAtiva.desce();
+
+
+
 
     requestAnimationFrame(loop);
 }
+mudaParaTela(telas.INICIO);
 loop(); //chamo a função
 
