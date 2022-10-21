@@ -13,6 +13,14 @@ const FlappyByrd = {
     altura: 24,
     x: 10,
     y: 50,
+    gravidade: 0.25,
+    velocidade: 0,
+    desce(){
+        FlappyByrd.velocidade+=+FlappyByrd.gravidade, //ele pega a velocidade e vai aumentando o,25 com o passar dos frames
+        FlappyByrd.y+=+1+FlappyByrd.velocidade; // ele descendo, pega o ponto atual dele e aumenta 1 ponto fazendo com que ele caia
+        //atualização ele pega a velocidade e quanto ele esta caindo para aumentar a velocidade
+        console.log(FlappyByrd.y)
+    },
 
     desenha() {
         contexto.drawImage(
@@ -21,11 +29,7 @@ const FlappyByrd = {
             FlappyByrd.largura, FlappyByrd.altura,  // o tamanho ocupado pela imagem para recortar
             FlappyByrd.x, FlappyByrd.y, //aonde vai aparecer na tela
             FlappyByrd.largura, FlappyByrd.altura //qual o tamanho dentro do canva
-        );
-    }
-}
-
-
+        ); } }
 
 // preparação do chão
 const chao = {
@@ -50,10 +54,7 @@ const chao = {
             chao.largura, chao.altura,
             (chao.x + chao.largura), chao.y, //esse metodo usado para empurar a imagem pego ele grudado na parede e empuro ele usando a largura para cobrir a tela
             chao.largura, chao.altura,
-        );
-    }
-
-}
+        ); } }
 
 const fundo = {
     spriteX: 390,
@@ -65,7 +66,7 @@ const fundo = {
 
     desenha() {
         contexto.fillStyle = '#70c5ce'; //escolho a cor de fundo
-        contexto.fillRect(0,0, canvas.width,canvas.height) // mostro quais cordenadas ela vai cobrir, começando no topo no caso 0,0 e vai ir ate o final do canva.
+        contexto.fillRect(0, 0, canvas.width, canvas.height) // mostro quais cordenadas ela vai cobrir, começando no topo no caso 0,0 e vai ir ate o final do canva.
         contexto.drawImage(
             sprites,
             fundo.spriteX, fundo.spriteY,
@@ -77,18 +78,17 @@ const fundo = {
             sprites,
             fundo.spriteX, fundo.spriteY,
             fundo.largura, fundo.altura,
-            (fundo.x+fundo.largura), fundo.y,
+            (fundo.x + fundo.largura), fundo.y,
             fundo.largura, fundo.altura,
-        );
-    }
-}
+        ); } }
 
 //função feita para montar o FPS (frames por segundo, imagen lisa)
 function loop() {
-    fundo.desenha();  
+    FlappyByrd.desce();
+    fundo.desenha();
     chao.desenha();
     FlappyByrd.desenha();
-      
+    
     requestAnimationFrame(loop);
 }
 loop(); //chamo a função
