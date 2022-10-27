@@ -25,6 +25,7 @@ const FlappyByrd = {
     desce() {
         if(fazColisao(FlappyByrd, chao)){
             console.log("faz colisao")
+            mudaParaTela(telas.INICIO)
             return;
         }
         FlappyByrd.velocidade += +FlappyByrd.gravidade, //ele pega a velocidade e vai aumentando o,25 com o passar dos frames
