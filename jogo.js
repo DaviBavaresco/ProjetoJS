@@ -6,53 +6,56 @@ const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
 
+function criaFlappByrd() {
+    const FlappyByrd = {
+        spriteX: 0,
+        spriteY: 0,
+        largura: 34,
+        altura: 24,
+        x: 10,
+        y: 50,
+        pulo: 7,
+        pula() { //basicamente eu tiro o valor do pula da gravidade, se ela era 20 depois do pulo vira 13 pois diminui 7, meio que reseto ela
+            console.log("devo pular")
+            FlappyByrd.velocidade = -FlappyByrd.pulo;
+        },
+        gravidade: 0.25,
+        velocidade: 0,
+        desce() {
+            if (fazColisao(FlappyByrd, chao)) {
+                console.log("faz colisao")
+                mudaParaTela(telas.INICIO)
+                return;
+            }
+            FlappyByrd.velocidade += +FlappyByrd.gravidade, //ele pega a velocidade e vai aumentando o,25 com o passar dos frames
+                FlappyByrd.y += +1 + FlappyByrd.velocidade; // ele descendo, pega o ponto atual dele e aumenta 1 ponto fazendo com que ele caia
+            //atualização ele pega a velocidade e quanto ele esta caindo para aumentar a velocidade
+            console.log(FlappyByrd.y)
+        },
 
-// transformo o nosso personagem em um objeto
-const FlappyByrd = {
-    spriteX: 0,
-    spriteY: 0,
-    largura: 34,
-    altura: 24,
-    x: 10,
-    y: 50,
-    pulo:7,
-    pula(){ //basicamente eu tiro o valor do pula da gravidade, se ela era 20 depois do pulo vira 13 pois diminui 7, meio que reseto ela
-     console.log("devo pular") 
-     FlappyByrd.velocidade=-FlappyByrd.pulo;  
-    },
-    gravidade: 0.25,
-    velocidade: 0,
-    desce() {
-        if(fazColisao(FlappyByrd, chao)){
-            console.log("faz colisao")
-            mudaParaTela(telas.INICIO)
-            return;
+        desenha() {
+            contexto.drawImage(
+                sprites, //escolho o arquivo
+                FlappyByrd.spriteX, FlappyByrd.spriteY, //distancias da borda da primeira imagem
+                FlappyByrd.largura, FlappyByrd.altura,  // o tamanho ocupado pela imagem para recortar
+                FlappyByrd.x, FlappyByrd.y, //aonde vai aparecer na tela
+                FlappyByrd.largura, FlappyByrd.altura //qual o tamanho dentro do canva
+            );
         }
-        FlappyByrd.velocidade += +FlappyByrd.gravidade, //ele pega a velocidade e vai aumentando o,25 com o passar dos frames
-        FlappyByrd.y += +1 + FlappyByrd.velocidade; // ele descendo, pega o ponto atual dele e aumenta 1 ponto fazendo com que ele caia
-        //atualização ele pega a velocidade e quanto ele esta caindo para aumentar a velocidade
-        console.log(FlappyByrd.y)
-    },
-
-    desenha() {
-        contexto.drawImage(
-            sprites, //escolho o arquivo
-            FlappyByrd.spriteX, FlappyByrd.spriteY, //distancias da borda da primeira imagem
-            FlappyByrd.largura, FlappyByrd.altura,  // o tamanho ocupado pela imagem para recortar
-            FlappyByrd.x, FlappyByrd.y, //aonde vai aparecer na tela
-            FlappyByrd.largura, FlappyByrd.altura //qual o tamanho dentro do canva
-        );
-    },
-};
-
-function fazColisao(FlappyByrd, chao){
-const FlappyByrdY = FlappyByrd.y + FlappyByrd.altura;
-const chaoY = chao.y;
-
-if(FlappyByrdY>=chaoY){
-    return true 
+    }
+    return FlappyByrd;
 }
-return false
+// transformo o nosso personagem em um objeto
+
+
+function fazColisao(FlappyByrd, chao) {
+    const FlappyByrdY = FlappyByrd.y + FlappyByrd.altura;
+    const chaoY = chao.y;
+
+    if (FlappyByrdY >= chaoY) {
+        return true
+    }
+    return false
 };
 // preparação do chão
 const chao = {
@@ -128,22 +131,29 @@ const inicio = {
         );
     }
 }
-
+const globais = {};
 let telaAtiva = {};
 function mudaParaTela(novaTela) {
     telaAtiva = novaTela;
+    
+    if(telaAtiva.inicializa()){
+        inicializa();
+    }
 };
 
 const telas = {
     INICIO: { //monto a tela de inicio com o personagem parado, e es
+        inicializa(){
+           globais.flappyByrd= criaFlappByrd();
+        },
         desenha() {
             fundo.desenha();
             chao.desenha();
-            FlappyByrd.desenha();
+            globais.flappyByrd.desenha();
             inicio.desenha();
 
         },
-        click(){
+        click() {
             mudaParaTela(telas.jogo);
         },
         desce() {
@@ -156,15 +166,15 @@ telas.jogo = { //monto a tela de jogo com o personagem se mechendo
     desenha() {
         fundo.desenha();
         chao.desenha();
-        FlappyByrd.desenha();
+        globais.flappyByrd.desenha();
     },
-    click(){
-        FlappyByrd.pula();
+    click() {
+        globais.flappyByrd.pula();
     },
     desce() {
-        FlappyByrd.desce();
+        globais.flappyByrd.desce();
     }
-}
+};
 //função feita para montar o FPS (frames por segundo, imagen lisa)
 function loop() {
 
@@ -174,10 +184,10 @@ function loop() {
     requestAnimationFrame(loop);
 }
 
-window.addEventListener('click', function(){
- if(telaAtiva.click()){
-    telaAtiva.click();
- }
+window.addEventListener('click', function () {
+    if (telaAtiva.click()) {
+        telaAtiva.click();
+    }
 });
 mudaParaTela(telas.INICIO);
 loop(); //chamo a função
