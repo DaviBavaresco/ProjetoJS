@@ -13,6 +13,11 @@ const FlappyByrd = {
     altura: 24,
     x: 10,
     y: 50,
+    pulo:7,
+    pula(){ //basicamente eu tiro o valor do pula da gravidade, se ela era 20 depois do pulo vira 13 pois diminui 7, meio que reseto ela
+     console.log("devo pular") 
+     FlappyByrd.velocidade=-FlappyByrd.pulo;  
+    },
     gravidade: 0.25,
     velocidade: 0,
     desce() {
@@ -136,6 +141,9 @@ telas.jogo = { //monto a tela de jogo com o personagem se mechendo
         fundo.desenha();
         chao.desenha();
         FlappyByrd.desenha();
+    },
+    click(){
+        FlappyByrd.pula();
     },
     desce() {
         FlappyByrd.desce();
