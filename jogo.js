@@ -5,6 +5,8 @@ const canvas = document.querySelector('canvas');
 // jogo vai ser 2D >
 const contexto = canvas.getContext('2d');
 
+
+
 // transformo o nosso personagem em um objeto
 const FlappyByrd = {
     spriteX: 0,
@@ -21,8 +23,12 @@ const FlappyByrd = {
     gravidade: 0.25,
     velocidade: 0,
     desce() {
+        if(fazColisao(FlappyByrd, chao)){
+            console.log("faz colisao")
+            return;
+        }
         FlappyByrd.velocidade += +FlappyByrd.gravidade, //ele pega a velocidade e vai aumentando o,25 com o passar dos frames
-            FlappyByrd.y += +1 + FlappyByrd.velocidade; // ele descendo, pega o ponto atual dele e aumenta 1 ponto fazendo com que ele caia
+        FlappyByrd.y += +1 + FlappyByrd.velocidade; // ele descendo, pega o ponto atual dele e aumenta 1 ponto fazendo com que ele caia
         //atualização ele pega a velocidade e quanto ele esta caindo para aumentar a velocidade
         console.log(FlappyByrd.y)
     },
@@ -35,9 +41,18 @@ const FlappyByrd = {
             FlappyByrd.x, FlappyByrd.y, //aonde vai aparecer na tela
             FlappyByrd.largura, FlappyByrd.altura //qual o tamanho dentro do canva
         );
-    }
-}
+    },
+};
 
+function fazColisao(FlappyByrd, chao){
+const FlappyByrdY = FlappyByrd.y + FlappyByrd.altura;
+const chaoY = chao.y;
+
+if(FlappyByrdY>=chaoY){
+    return true 
+}
+return false
+};
 // preparação do chão
 const chao = {
     spriteX: 0,
