@@ -122,6 +122,9 @@ const telas = {
             inicio.desenha();
 
         },
+        click(){
+            mudaParaTela(telas.jogo);
+        },
         desce() {
 
         }
@@ -144,11 +147,14 @@ function loop() {
     telaAtiva.desenha();
     telaAtiva.desce();
 
-
-
-
     requestAnimationFrame(loop);
 }
+
+window.addEventListener('click', function(){
+ if(telaAtiva.click()){
+    telaAtiva.click();
+ }
+});
 mudaParaTela(telas.INICIO);
 loop(); //chamo a função
 
