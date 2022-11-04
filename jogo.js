@@ -5,6 +5,8 @@ const canvas = document.querySelector('canvas');
 // jogo vai ser 2D >
 const contexto = canvas.getContext('2d');
 
+const impact = new Audio()
+impact.src='impacto.wav';
 
 function criaFlappByrd() {
     const FlappyByrd = {
@@ -22,8 +24,9 @@ function criaFlappByrd() {
         gravidade: 0.25,
         velocidade: 0,
         desce() {
-            if (fazColisao(FlappyByrd, chao)) {
+            if (fazColisao(FlappyByrd, globais.chao)) {
                 console.log("faz colisao")
+                impact.play();// quanto ele toca no chao, da play no audio e ja troca a tela
                 mudaParaTela(telas.INICIO)
                 return;
             }
@@ -56,16 +59,19 @@ function fazColisao(FlappyByrd, chao) {
         return true
     }
     return false
-};
-// preparação do chão
-const chao = {
+}
+function moveChao(){
+    const chao = {
     spriteX: 0,
     spriteY: 607,
     largura: 224,
     altura: 112,
     x: 0,
     y: canvas.height - 112, // empurro ele todo para baixo, subo só a altura dele deixando ele perfeito no canva
-
+        atualiza(){
+            const movimentoChao=1;//crio a "velocidade"
+            chao.x=chao.x-movimentoChao; // fica chao atual = chao atual  menos um ai ele se move 
+        },
     desenha() {
         contexto.drawImage( //primeiro chao
             sprites,
@@ -83,6 +89,10 @@ const chao = {
         );
     }
 }
+return chao;
+};
+// preparação do chão
+
 
 const fundo = {
     spriteX: 390,
@@ -145,10 +155,11 @@ const telas = {
     INICIO: { //monto a tela de inicio com o personagem parado, e es
         inicializa(){
            globais.flappyByrd= criaFlappByrd();
+           globais.chao= moveChao();
         },
         desenha() {
             fundo.desenha();
-            chao.desenha();
+            globais.chao.desenha();
             globais.flappyByrd.desenha();
             inicio.desenha();
 
@@ -157,7 +168,7 @@ const telas = {
             mudaParaTela(telas.jogo);
         },
         desce() {
-
+            globais.chao.atualiza()
         }
     }
 
@@ -165,7 +176,7 @@ const telas = {
 telas.jogo = { //monto a tela de jogo com o personagem se mechendo
     desenha() {
         fundo.desenha();
-        chao.desenha();
+        globais.chao.desenha();
         globais.flappyByrd.desenha();
     },
     click() {
