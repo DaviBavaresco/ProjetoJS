@@ -70,7 +70,9 @@ function moveChao(){
     y: canvas.height - 112, // empurro ele todo para baixo, subo só a altura dele deixando ele perfeito no canva
         atualiza(){
             const movimentoChao=1;//crio a "velocidade"
-            chao.x=chao.x-movimentoChao; // fica chao atual = chao atual  menos um ai ele se move 
+            const repeteEm= chao.largura / 2;
+            const movimentacao = chao.x-movimentoChao; // fica chao atual = chao atual  menos um ai ele se move 
+            chao.x=movimentacao % repeteEm;
         },
     desenha() {
         contexto.drawImage( //primeiro chao
