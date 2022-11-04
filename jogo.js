@@ -42,10 +42,15 @@ function criaFlappByrd() {
         ],
         frameAtual:0,
         atualizaFrameAtual(){
+            const intervaloFrames= 10;
+            const passouIntervalo = frames % intervaloFrames===0;
+            if(passouIntervalo){
             const baseIncremento=1;
             const incremento = baseIncremento+FlappyByrd.frameAtual;
             const baseRepeticao = FlappyByrd.movimentos.length;
             FlappyByrd.frameAtual = incremento % baseRepeticao;
+            }
+            
         },
         desenha() {
             FlappyByrd.atualizaFrameAtual();
@@ -161,21 +166,121 @@ let telaAtiva = {};
 function mudaParaTela(novaTela) {
     telaAtiva = novaTela;
     
-    if(telaAtiva.inicializa()){
-        inicializa();
+    if(telaAtiva.inicializa){
+        telaAtiva.inicializa();
     }
-};
+}
+function criaCanos() {
+    const canos = {
+      largura: 52,
+      altura: 400,
+      chao: {
+        spriteX: 0,
+        spriteY: 169,
+      },
+      ceu: {
+        spriteX: 52,
+        spriteY: 169,
+      },
+      espaco: 80,
+      desenha() {
+        canos.pares.forEach(function(par) {
+          const yRandom = par.y;
+          const espacamentoEntreCanos = 100;
+    
+          const canoCeuX = par.x;
+          const canoCeuY = yRandom; 
+  
+          // [Cano do Céu]
+          contexto.drawImage(
+            sprites, 
+            canos.ceu.spriteX, canos.ceu.spriteY,
+            canos.largura, canos.altura,
+            canoCeuX, canoCeuY,
+            canos.largura, canos.altura,
+          )
+          
+          // [Cano do Chão]
+          const canoChaoX = par.x;
+          const canoChaoY = canos.altura + espacamentoEntreCanos + yRandom; 
+          contexto.drawImage(
+            sprites, 
+            canos.chao.spriteX, canos.chao.spriteY,
+            canos.largura, canos.altura,
+            canoChaoX, canoChaoY,
+            canos.largura, canos.altura,
+          )
+  
+          par.canoCeu = {
+            x: canoCeuX,
+            y: canos.altura + canoCeuY
+          }
+          par.canoChao = {
+            x: canoChaoX,
+            y: canoChaoY
+          }
+        })
+      },
+      temColisaoComOFlappyBird(par) {
+        const cabecaDoFlappy = globais.FlappyByrd.y;
+        const peDoFlappy = globais.FlappyByrd.y + globais.FlappyByrd.altura;
+        
+        if((globais.FlappyByrd.x + globais.FlappyByrd.largura) >= par.x) {
+          if(cabecaDoFlappy <= par.canoCeu.y) {
+            return true;
+          }
+  
+          if(peDoFlappy >= par.canoChao.y) {
+            return true;
+          }
+        }
+        return false;
+      },
+      pares: [],
+      atualiza() {
+        const passou100Frames = frames % 100 === 0;
+        if(passou100Frames) {
+          console.log('Passou 100 frames');
+          canos.pares.push({
+            x: canvas.width,
+            y: -150 * (Math.random() + 1),
+          });
+        }
+  
+  
+  
+        canos.pares.forEach(function(par) {
+          par.x = par.x - 2;
+  
+          if(canos.temColisaoComOFlappyBird(par)) {
+            console.log('Você perdeu!')
+            impact.play();
+            mudaParaTela(telas.GAME_OVER);
+          }
+  
+          if(par.x + canos.largura <= 0) {
+            canos.pares.shift();
+          }
+        });
+  
+      }
+    }
+  
+    return canos
+  };
 
 const telas = {
     INICIO: { //monto a tela de inicio com o personagem parado, e es
         inicializa(){
-           globais.flappyByrd= criaFlappByrd();
+           globais.FlappyByrd= criaFlappByrd();
            globais.chao= moveChao();
+           globais.canos = criaCanos();
         },
         desenha() {
             fundo.desenha();
+            globais.FlappyByrd.desenha();
+            
             globais.chao.desenha();
-            globais.flappyByrd.desenha();
             inicio.desenha();
 
         },
@@ -184,6 +289,7 @@ const telas = {
         },
         desce() {
             globais.chao.atualiza()
+            globais.canos.atualiza();
         }
     }
 
@@ -191,14 +297,18 @@ const telas = {
 telas.jogo = { //monto a tela de jogo com o personagem se mechendo
     desenha() {
         fundo.desenha();
+        globais.canos.desenha();
         globais.chao.desenha();
-        globais.flappyByrd.desenha();
+        globais.FlappyByrd.desenha();
     },
     click() {
-        globais.flappyByrd.pula();
+        globais.FlappyByrd.pula();
     },
     desce() {
-        globais.flappyByrd.desce();
+        globais.canos.atualiza();
+        globais.chao.atualiza();
+        globais.FlappyByrd.desce();
+
     }
 };
 //função feita para montar o FPS (frames por segundo, imagen lisa)
