@@ -4,7 +4,7 @@ sprites.src = './sprites.png';
 const canvas = document.querySelector('canvas');
 // jogo vai ser 2D >
 const contexto = canvas.getContext('2d');
-
+let frames=0;
 const impact = new Audio()
 impact.src='impacto.wav';
 
@@ -33,13 +33,26 @@ function criaFlappByrd() {
             FlappyByrd.velocidade += +FlappyByrd.gravidade, //ele pega a velocidade e vai aumentando o,25 com o passar dos frames
                 FlappyByrd.y += +1 + FlappyByrd.velocidade; // ele descendo, pega o ponto atual dele e aumenta 1 ponto fazendo com que ele caia
             //atualização ele pega a velocidade e quanto ele esta caindo para aumentar a velocidade
-            console.log(FlappyByrd.y)
         },
-
+        movimentos:[
+            {spriteX:0, spriteY:0, },//asa normal
+            {spriteX:0, spriteY:26, },//asa no meio
+            {spriteX:0, spriteY:52, },//asa baixa
+            {spriteX:0, spriteY:26, },//asa no meio
+        ],
+        frameAtual:0,
+        atualizaFrameAtual(){
+            const baseIncremento=1;
+            const incremento = baseIncremento+FlappyByrd.frameAtual;
+            const baseRepeticao = FlappyByrd.movimentos.length;
+            FlappyByrd.frameAtual = incremento % baseRepeticao;
+        },
         desenha() {
+            FlappyByrd.atualizaFrameAtual();
+            const  {spriteX,spriteY} = FlappyByrd.movimentos[FlappyByrd.frameAtual];
             contexto.drawImage(
                 sprites, //escolho o arquivo
-                FlappyByrd.spriteX, FlappyByrd.spriteY, //distancias da borda da primeira imagem
+                spriteX, spriteY, //distancias da borda da primeira imagem
                 FlappyByrd.largura, FlappyByrd.altura,  // o tamanho ocupado pela imagem para recortar
                 FlappyByrd.x, FlappyByrd.y, //aonde vai aparecer na tela
                 FlappyByrd.largura, FlappyByrd.altura //qual o tamanho dentro do canva
@@ -72,7 +85,7 @@ function moveChao(){
             const movimentoChao=1;//crio a "velocidade"
             const repeteEm= chao.largura / 2;
             const movimentacao = chao.x-movimentoChao; // fica chao atual = chao atual  menos um ai ele se move 
-            chao.x=movimentacao % repeteEm;
+            chao.x=movimentacao % repeteEm; //sempre quando chegar na metade do chao ele volta ao inicio
         },
     desenha() {
         contexto.drawImage( //primeiro chao
@@ -193,7 +206,7 @@ function loop() {
 
     telaAtiva.desenha();
     telaAtiva.desce();
-
+    frames+=1;
     requestAnimationFrame(loop);
 }
 
