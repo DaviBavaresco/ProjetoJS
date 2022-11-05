@@ -161,15 +161,7 @@ const inicio = {
         );
     }
 }
-const globais = {};
-let telaAtiva = {};
-function mudaParaTela(novaTela) {
-    telaAtiva = novaTela;
-    
-    if(telaAtiva.inicializa){
-        telaAtiva.inicializa();
-    }
-}
+
 function criaCanos() {
     const canos = {
       largura: 52,
@@ -186,7 +178,7 @@ function criaCanos() {
       desenha() {
         canos.pares.forEach(function(par) {
           const yRandom = par.y;
-          const espacamentoEntreCanos = 100;
+          const espacamentoEntreCanos = 150;
     
           const canoCeuX = par.x;
           const canoCeuY = yRandom; 
@@ -267,8 +259,16 @@ function criaCanos() {
     }
   
     return canos
-  };
-
+  }
+const globais = {};
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+    telaAtiva = novaTela;
+    
+    if(telaAtiva.inicializa){
+        telaAtiva.inicializa();
+    }
+}
 const telas = {
     INICIO: { //monto a tela de inicio com o personagem parado, e es
         inicializa(){
@@ -321,7 +321,7 @@ function loop() {
 }
 
 window.addEventListener('click', function () {
-    if (telaAtiva.click()) {
+    if (telaAtiva.click) {
         telaAtiva.click();
     }
 });
